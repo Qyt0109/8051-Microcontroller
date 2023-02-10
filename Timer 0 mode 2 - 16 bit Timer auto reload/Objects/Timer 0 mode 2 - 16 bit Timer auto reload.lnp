@@ -1,0 +1,3 @@
+".\Objects\main.obj" 
+TO ".\Objects\Timer 0 mode 2 - 16 bit Timer auto reload" 
+PRINT(".\Listings\Timer 0 mode 2 - 16 bit Timer auto reload.m51") RAMSIZE(256) 

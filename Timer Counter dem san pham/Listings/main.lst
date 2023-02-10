@@ -1,0 +1,94 @@
+C51 COMPILER V9.60.0.0   MAIN                                                              10/06/2022 01:49:21 PAGE 1   
+
+
+C51 COMPILER V9.60.0.0, COMPILATION OF MODULE MAIN
+OBJECT MODULE PLACED IN .\Objects\main.obj
+COMPILER INVOKED BY: C:\Keil_v5\C51\BIN\C51.EXE main.c OPTIMIZE(8,SPEED) BROWSE DEBUG OBJECTEXTEND PRINT(.\Listings\main
+                    -.lst) TABS(2) OBJECT(.\Objects\main.obj)
+
+line level    source
+
+   1          #include "main.h"
+   2          #include "port.h"
+   3          #include "..\Library\LCD 16x2.h"
+   4          #include "..\Library\Delay.h"
+   5          #include "..\Library\UART mode 1.h"
+   6          
+   7          char LCD_NUM_Char[] = {'0','1','2','3','4','5','6','7','8','9'};
+   8          
+   9          void LCD_OUT_NUM(X,Y,unsigned int NUM)
+  10          {
+  11   1        unsigned int A;
+  12   1        LCD_SL(X,Y);
+  13   1        
+  14   1        A = NUM/  10000;
+  15   1        NUM = NUM%10000;
+  16   1        LCD_CHAR_CL(LCD_NUM_Char[A]);
+  17   1        
+  18   1        A = NUM/  1000;
+  19   1        NUM = NUM%1000;
+  20   1        LCD_CHAR_CL(LCD_NUM_Char[A]);
+  21   1        
+  22   1        A = NUM/  100;
+  23   1        NUM = NUM%100;
+  24   1        LCD_CHAR_CL(LCD_NUM_Char[A]);
+  25   1        
+  26   1        A = NUM/  10;
+  27   1        NUM = NUM%10;
+  28   1        LCD_CHAR_CL(LCD_NUM_Char[A]);
+  29   1        LCD_CHAR_CL(LCD_NUM_Char[NUM]);
+  30   1      }
+  31          
+  32          unsigned int Read_Timer_Value()
+  33          {
+  34   1        unsigned char Timer_Low_Value, Timer_High_Value;  //Cac bien luu gia tri trong thanh ghi Timer
+  35   1        unsigned int Timer_Value;
+  36   1        Timer_Low_Value = TL0;          //LLLL LLLL
+  37   1        Timer_High_Value = TH0;         //HHHH HHHH
+  38   1        Timer_Value = TH0;              //XXXX XXXX HHHH HHHH
+  39   1        Timer_Value <<= 8;              //HHHH HHHH 0000 0000
+  40   1        Timer_Value |= Timer_Low_Value; //HHHH HHHH LLLL LLLL
+  41   1        return Timer_Value;
+  42   1      }
+  43          
+  44          
+  45          void main()
+  46          {
+  47   1        TMOD &= 0xF0;   //Counter 0 mode 1, dem xung tu ben ngoai dua vao chan T0 (P3^4)
+  48   1        TMOD |= 0x05;
+  49   1        TR0 = 1;        //Bat dau count
+  50   1        
+  51   1        LCD_INIT();
+  52   1        LCD_OUT_SL(0,4,"COUNTED:");
+  53   1        LCD_OUT_NUM(1,5,"00000");
+*** WARNING C214 IN LINE 53 OF main.c: 'Argument': conversion: pointer to non-pointer
+C51 COMPILER V9.60.0.0   MAIN                                                              10/06/2022 01:49:21 PAGE 2   
+
+  54   1        while(1)
+  55   1        {
+  56   2          LCD_OUT_NUM(1,5,Read_Timer_Value());
+  57   2          if(Count_Reset == 0)
+  58   2          {
+  59   3            Delay_ms(20);
+  60   3            if(Count_Reset == 0)
+  61   3            {
+  62   4              TH0 = TL0 = 0;
+  63   4              while(Count_Reset == 0);
+  64   4            }
+  65   3          }
+  66   2        }
+  67   1      }
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =    263    ----
+   CONSTANT SIZE    =     15    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =     10       3
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  1 WARNING(S),  0 ERROR(S)
