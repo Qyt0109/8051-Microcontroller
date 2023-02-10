@@ -1,0 +1,6 @@
+".\Objects\main.obj",
+".\Objects\Delay.obj",
+".\Objects\LCD 16x2.obj",
+".\Objects\4x4 keypad.obj" 
+TO ".\Objects\Matrix keypad to LCD" 
+PRINT(".\Listings\Matrix keypad to LCD.m51") RAMSIZE(256) 
