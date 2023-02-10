@@ -1,0 +1,154 @@
+C51 COMPILER V9.60.0.0   NGAT_TIMER_0                                                      10/11/2022 09:41:41 PAGE 1   
+
+
+C51 COMPILER V9.60.0.0, COMPILATION OF MODULE NGAT_TIMER_0
+OBJECT MODULE PLACED IN .\Objects\Ngat Timer 0.obj
+COMPILER INVOKED BY: C:\Keil_v5\C51\BIN\C51.EXE ..\Library\Ngat Timer 0.c OPTIMIZE(8,SPEED) BROWSE DEBUG OBJECTEXTEND PR
+                    -INT(.\Listings\Ngat Timer 0.lst) TABS(2) OBJECT(.\Objects\Ngat Timer 0.obj)
+
+line level    source
+
+   1          /*
+   2          Thanh ghi Timer 0: TH0 TL0
+   3          Thanh ghi Timer 1: TH1 TL1
+   4          Thanh ghi TMOD: [Gate][C/T][M1][M0] [Gate][C/T][M1][M0]
+   5                                TIMER 1              TIMER 0
+   6              [M1][M0]  Mode    Che do hoat dong
+   7                0  0     0    Timer 13 bit: 8 bit THx, 5 bit TLx
+   8                0  1     1    Timer 16 bit: khong co dat truoc
+   9                1  0     2    Timer 8  bit: auto reload
+  10                1  1     3    Che do bo dinh thoi chia tach
+  11                
+  12              [C/T] = 0: Timer
+  13                    = 1: Counter
+  14                Tan so Timer/Counter = Tan so thach anh/12
+  15                VD: FREQ_OSC = 12MHz => f = 1MHz, t = 1/f = 1us
+  16            Thuong 8051 su dung 11,0592MHz vi no cho phep truyen thong UART khong co loi
+  17              [GATE] = 0: Cho phep start/stop Timer 0 bang TR0, Timer 1 bang TR1
+  18              [GATE] = 1: Cho phep start/stop Timer 0 bang TR0, Timer 1 bang TR1, phan cung tu ben ngoai
+  19            
+  20          Thanh ghi TCON: [TF1][TR1][TF0][TR0] [IE1][IT1][IE0][IT0]
+  21              [TFx]: Co bao tran Timer x (=1: tran)
+  22              [TRx]: Co start/stop Timer x (0:stop, 1:start)
+  23              
+  24              Mode 0: Timer/Counter 13 bit (0x0000-0x1FFF)
+  25              Mode 1: Timer/Counter 16 bit (0x0000-0xFFFF)
+  26              Mode 2: Timer/Counter 8  bit (0xXX-0xFF voi XX la gia tri duoc cai dat trong thanh ghi THx)
+  27                      Khi dem, se tang dan gia tri TLx, khi = FF, TFx = 1
+  28                      Sau do, thanh ghi TLx se duoc nap gia tri tu thanh ghi THx
+  29                      De bat dau dem lai, can xoa co TFx bang phan mem
+  30                      => Ung dung: Thiet lap toc do Baud cua
+  31              Mode 3: It duoc su dung
+  32              
+  33              ***
+  34              Ngat trong 8051:
+  35              - RESET: Khi reset, chuong trinh nhay ve dia chi 0x0000         STT ngat: -
+  36              - 2 ngat Timer: Timer 0 (TF0) co dia chi chuong trinh ngat 0x000B     >>> 1 <<<
+  37                              Timer 1 (TF1) co dia chi chuong trinh ngat 0x001B         3
+  38              - Ngat ngoai: IE0 0x0003                                                  0
+  39                            IE1 0x0013                                                  2
+  40              - Ngat truyen thong: RI/TI  0x0023                                        4
+  41              
+  42              Khi co ngat xay ra:
+  43              - Hoan thanh not cong viec dang thuc hien
+  44              - Luu dia chi cua lenh ke tiep vao stack, luu tinh trang hien tai cua cac ngat
+  45              - Nhay den dia chi cua truong trinh phuc vu ngat (Vung nho co dinh)
+  46              - Thuc hien het cac lenh trong chuong trinh ngat
+  47              - Tra lai dia chi lenh ke tiep da luu trong stack
+  48              
+  49              
+  50              EA: Cho phep/Cam toan bo cac nguon ngat
+  51              ES: Cho phep/Cam cong truyen thong noi tiep
+  52              ETx: Ngat timer x
+  53              EXx: Ngat ngoai x
+  54          */
+C51 COMPILER V9.60.0.0   NGAT_TIMER_0                                                      10/11/2022 09:41:41 PAGE 2   
+
+  55          
+  56          #include "main.h"
+  57          #include "Ngat Timer 0.h"
+  58          
+  59          unsigned int Count, cnt, Timer0_Done;
+  60          
+  61          //Thiet lap Timer 0 mode 1
+  62          void INTR_Timer0_INIT()
+  63          {
+  64   1        TMOD &= 0xF0;   //Xoa cai dat Timer 0
+  65   1        TMOD |= 0x01;   //Cai dat Timer 0 mode 1
+  66   1        
+  67   1        TH0 = 0x3C;     //Crystal 12MHz => Xung cap cho Timer = 12MHz/12 = 1MHz => 1 chu ky xung = 1/1MHz = 1us
+  68   1                        //De delay 50ms can 50ms/1us = 50000 chu ky xung
+  69   1                        //=> Timer can dem nguoc tu 2^16 - 50000 = 0x3CB0 = THx TLx
+  70   1        TL0 = 0xB0;
+  71   1        
+  72   1        EA = 1;         //Cho phep ngat toan cuc
+  73   1        ET0 = 1;        //Cho phep ngat Timer 0
+  74   1        TR0 = 1;        //Start Timer
+  75   1      }
+  76          
+  77          void Timer0_Overflow() interrupt 1
+  78          {
+  79   1        //Reload Thanh ghi Timer 0
+  80   1        TH0 = 0x3C;
+  81   1        TL0 = 0xB0;
+  82   1        cnt++;
+  83   1        if(cnt==Count)
+  84   1        {
+  85   2          cnt = 0;
+  86   2          P2_0 = !P2_0;
+  87   2        }
+  88   1        
+  89   1      }
+  90          
+  91          void Set_Timer0_Time_ms(unsigned long time)
+  92          {
+  93   1        Count = time/50;
+  94   1        cnt = 0;
+  95   1      }
+  96          
+  97          int Check_Timer0_Done()
+  98          {
+  99   1        return Timer0_Done;
+ 100   1        Timer0_Done =0;
+ 101   1      }
+ 102          
+ 103          
+ 104          
+ 105          
+ 106          
+ 107          
+ 108          
+ 109          
+ 110          
+ 111          
+ 112          
+ 113          
+ 114          
+ 115          
+ 116          
+C51 COMPILER V9.60.0.0   NGAT_TIMER_0                                                      10/11/2022 09:41:41 PAGE 3   
+
+ 117          
+ 118          
+ 119          
+ 120          
+ 121          
+ 122          
+ 123          
+ 124          
+ 125          
+*** WARNING C294 IN LINE 100 OF ..\Library\Ngat Timer 0.c: unreachable code
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =     82    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =      6    ----
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  1 WARNING(S),  0 ERROR(S)
