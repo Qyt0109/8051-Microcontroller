@@ -1,0 +1,4 @@
+".\Objects\main.obj",
+".\Objects\Delay.obj" 
+TO ".\Objects\Test 8051 kit" 
+PRINT(".\Listings\Test 8051 kit.m51") RAMSIZE(256) 

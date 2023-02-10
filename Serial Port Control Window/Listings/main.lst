@@ -1,0 +1,70 @@
+C51 COMPILER V9.60.0.0   MAIN                                                              09/29/2022 23:31:09 PAGE 1   
+
+
+C51 COMPILER V9.60.0.0, COMPILATION OF MODULE MAIN
+OBJECT MODULE PLACED IN .\Objects\main.obj
+COMPILER INVOKED BY: C:\Keil_v5\C51\BIN\C51.EXE main.c OPTIMIZE(8,SPEED) BROWSE DEBUG OBJECTEXTEND PRINT(.\Listings\main
+                    -.lst) TABS(2) OBJECT(.\Objects\main.obj)
+
+line level    source
+
+   1          #include "main.h"
+   2          #include "..\Library\Delay.h"
+   3          #include "..\Library\UART mode 1.h"
+   4          #include "stdio.h"
+   5          
+   6          sbit LED_Pin = P2^0;
+   7          sbit LED_But = P1^0;
+   8          char RX_Data, TX_Data;
+   9          
+  10          main()
+  11          {
+  12   1        UART1_INIT(9600);
+  13   1        while(1)
+  14   1        {
+  15   2          if(UART1_Data_Ready())
+  16   2          {
+  17   3            RX_Data = UART1_Read();
+  18   3            if(RX_Data = '@')
+*** WARNING C276 IN LINE 18 OF main.c: constant in condition expression
+  19   3            {
+  20   4              UART1_Char('1');
+  21   4              LED_Pin = 0;
+  22   4            }
+  23   3            else if(RX_Data = 'F')
+*** WARNING C276 IN LINE 23 OF main.c: constant in condition expression
+  24   3            {
+  25   4              UART1_Char('0');
+  26   4              LED_Pin = 1;
+  27   4            }
+  28   3          }
+  29   2          
+  30   2          if(LED_But == 0)
+  31   2          {
+  32   3            Delay_ms(20);
+  33   3            if(LED_But == 0)
+  34   3            {
+  35   4              while(LED_But == 0);
+  36   4              UART1_Write("X");
+  37   4              LED_Pin = !LED_Pin;
+  38   4            }
+  39   3          }
+  40   2        }
+  41   1      }
+*** WARNING C294 IN LINE 23 OF main.c: unreachable code
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =     57    ----
+   CONSTANT SIZE    =      2    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =      2    ----
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+C51 COMPILER V9.60.0.0   MAIN                                                              09/29/2022 23:31:09 PAGE 2   
+
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  3 WARNING(S),  0 ERROR(S)

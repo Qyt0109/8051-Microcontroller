@@ -1,0 +1,1 @@
+#define FREQ_OSC 11059200
