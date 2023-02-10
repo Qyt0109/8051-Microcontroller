@@ -1,0 +1,48 @@
+C51 COMPILER V9.60.0.0   MAIN                                                              10/02/2022 05:33:17 PAGE 1   
+
+
+C51 COMPILER V9.60.0.0, COMPILATION OF MODULE MAIN
+OBJECT MODULE PLACED IN .\Objects\main.obj
+COMPILER INVOKED BY: C:\Keil_v5\C51\BIN\C51.EXE main.c OMF2 OPTIMIZE(8,SPEED) BROWSE DEBUG PRINT(.\Listings\main.lst) TA
+                    -BS(2) OBJECT(.\Objects\main.obj)
+
+line level    source
+
+   1          #include "main.h"
+   2          #include "..\Library\UART mode 1.h"
+   3          #include "..\Library\Delay.h"
+   4          
+   5          void main()
+   6          {
+   7   1        UART1_INIT(9600);
+   8   1        
+   9   1        while(1)
+  10   1        {
+  11   2          UART1_Write("10002000");
+  12   2          Delay_ms(500);
+  13   2          UART1_Write("12001800");
+  14   2          Delay_ms(500);
+  15   2          UART1_Write("14001600");
+  16   2          Delay_ms(500);
+  17   2          UART1_Write("16001400");
+  18   2          Delay_ms(500);
+  19   2        }
+  20   1      }
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =     73    ----
+   CONSTANT SIZE    =     36    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =   ----    ----
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+   EDATA SIZE       =   ----    ----
+   HDATA SIZE       =   ----    ----
+   XDATA CONST SIZE =   ----    ----
+   FAR CONST SIZE   =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

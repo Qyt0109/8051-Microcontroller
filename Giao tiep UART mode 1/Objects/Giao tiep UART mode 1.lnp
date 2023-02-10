@@ -1,0 +1,6 @@
+".\Objects\UART mode 1.obj",
+".\Objects\LCD 16x2.obj",
+".\Objects\Delay.obj",
+".\Objects\main.obj" 
+TO ".\Objects\Giao tiep UART mode 1" 
+PRINT(".\Listings\Giao tiep UART mode 1.m51") RAMSIZE(256) 

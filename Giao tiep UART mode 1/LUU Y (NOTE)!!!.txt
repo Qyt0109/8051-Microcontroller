@@ -1,0 +1,1 @@
+UART mode 1 truyen tot nhung chua nhan duoc goi tin (RI khong duoc dua len 1 - bao hieu da nhan duoc data)
