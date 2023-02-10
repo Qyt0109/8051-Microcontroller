@@ -1,0 +1,5 @@
+".\Objects\main.obj",
+".\Objects\Delay.obj",
+".\Objects\LCD 16x2.obj" 
+TO ".\Objects\Do tan so xung vuong" 
+PRINT(".\Listings\Do tan so xung vuong.m51") RAMSIZE(256) 

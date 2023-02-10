@@ -1,0 +1,336 @@
+C51 COMPILER V9.60.0.0   LCD_16X2                                                          10/09/2022 09:19:45 PAGE 1   
+
+
+C51 COMPILER V9.60.0.0, COMPILATION OF MODULE LCD_16X2
+OBJECT MODULE PLACED IN .\Objects\LCD 16x2.obj
+COMPILER INVOKED BY: C:\Keil_v5\C51\BIN\C51.EXE ..\Library\LCD 16x2.c OPTIMIZE(8,SPEED) BROWSE DEBUG OBJECTEXTEND PRINT(
+                    -.\Listings\LCD 16x2.lst) TABS(2) OBJECT(.\Objects\LCD 16x2.obj)
+
+line level    source
+
+   1          //Giao tiep LCD 16x2
+   2          /*Can khai bao cac file thu vien vao main.c
+   3          
+   4          #include "main.h"
+   5          #include "..\Library\LCD 16x2.h"
+   6          
+   7          */
+   8          
+   9          #include "main.h"
+  10          #include "LCD 16x2.h"
+  11          #include "port.h"
+  12          #include "Delay.h"
+  13          
+  14          /*
+  15          
+  16          LUU Y: Tao file header port.h de khai bao ket noi phan cung tuong tu theo vi du sau:
+  17          
+  18          #ifndef _PORT_H_
+  19          #define _PORT_H_
+  20          
+  21          //Neu su dung che do giao tiep 8 bit:
+  22          
+  23          //sbit LCD_RS = P2^0;       //Chan RS cua LCD
+  24          //sbit LCD_EN = P2^1;       //Chan EN cua LCD
+  25          //#define LCD_BUS P3        //Bus truyen nhan du lieu, ma lenh cua LCD (D7-D0)
+  26          
+  27          //Neu su dung che do giao tiep 4 bit:
+  28          
+  29          //sbit LCD_RS = P0^0;
+  30          //sbit LCD_RW = P0^1;
+  31          //sbit LCD_EN = P0^2;
+  32          //sbit LCD_D4 = P2^4;
+  33          //sbit LCD_D5 = P2^5;
+  34          //sbit LCD_D6 = P2^6;
+  35          //sbit LCD_D7 = P2^7;
+  36          
+  37          #endif
+  38          
+  39          */
+  40          
+  41          /*
+  42          
+  43          __________________________________________________________________
+  44          ___CAC CHAN LCD 16x2___
+  45          
+  46          VSS: 0V           VDD: 5V           VEE: Dieu chinh do tuong phan
+  47          RS: Chon thanh ghi (RS=1: Doc/ghi du lieu, RS=0: Doc/ghi lenh)
+  48          R/W': Che do doc/ghi (R/W'=1: Doc (Read), R/W'=0: Ghi (Write))
+  49          E: Chan cho phep (Du lieu duoc doc/ghi tai thoi diem chan E chuyen
+  50                            trang thai tu cao xuong thap)
+  51          DB7-DB0: Bus du lieu de giao tiep voi LCD
+  52          LED+: Cuc duong den nen             LED-: Cuc am den nen
+  53          __________________________________________________________________
+  54          
+C51 COMPILER V9.60.0.0   LCD_16X2                                                          10/09/2022 09:19:45 PAGE 2   
+
+  55          ___CAC LENH CO BAN LCD 16x2___
+  56          
+  57          Lenh                  Chuc nang                           T(us)
+  58          
+  59          0x01    Xoa toan bo noi dung dang hien thi (Clear all)    1502
+  60          0x02    Di chuyen con tro ve vi tri dau man hinh          1502
+  61          0x06    Tu dong di chuyen con tro den vi tri tiep theo     37
+  62                  moi khi xuat ra LCD 1 ky tu
+  63          0x0C    Bat hien thi va tat con tro                        37
+  64          0x0E    Bat hien thi va bat con tro                        37
+  65          0x80    Di chuyen con tro ve dau dong 1                    37
+  66          0xC0    Di chuyen con tro ve dau dong 2
+  67          0x38    Giao tiep 8 bit, hien thi 2 dong, font 5x7         37
+  68          0x28    Giao tiep 4 bit, hien thi 2 dong, font 5x7         37
+  69          ___________________________________________________________________
+  70          
+  71          ___GUI LENH RA LCD___
+  72          
+  73          B1: R/W'=0                  Chon che do ghi ra LCD
+  74          B2: RS=0                    Chon che do doc/ghi lenh
+  75          B3: Gui ma Lenh tuong ung   Gui lenh can giao tiep
+  76              toi DB7-DB0
+  77          B4: E=0                     Tao xung de LCD nhan lenh
+  78              E=1
+  79          B5: Delay_us(T)             Delay de LCD thuc thi xong lenh
+  80          ___________________________________________________________________
+  81          
+  82          ___GUI DATA RA LCD___
+  83          
+  84          B1: R/W'=0                  Chon che do ghi ra LCD
+  85          B2: RS=1                    Chon che do doc/ghi du lieu
+  86          B3: Gui ma ASCII cua ky tu  Gui ky tu can hien thi
+  87              toi DB7-DB0
+  88          B4: E=0                     Tao xung de LCD nhan du lieu
+  89              E=1
+  90          B5: Delay_us(T=37us)        Delay de LCD hien thi xong ky tu
+  91          
+  92          *LUU Y: Ky tu duoc gui ra LCD se duoc hien thi tai vi tri con tro
+  93          ___________________________________________________________________
+  94          
+  95          ___KHOI TAO LCD___
+  96          
+  97          Tu khoi tao (HD44780): Che do giao tiep 8 bit, hien thi 1 dong tren,
+  98                                 tu dong tang con tro, tat hien thi
+  99          Khoi tao tuy chinh:
+ 100          Cap nguon LCD, Delay 15-40ms (100ms)
+ 101          Gui ma lenh 0011 xxxx (Lay 0x38 cho de nho)
+ 102          Delay 4100us  (5ms)
+ 103          Gui ma lenh 0011 xxxx
+ 104          Delay 100us   (1ms)
+ 105          Gui ma lenh 0011 xxxx
+ 106          Gui ma lenh 001[DL] [N][F]xx (Thuong lay 0x38)
+ 107          trong do: [DL]=0: Giao tiep 8 bit (DB7-DB0)
+ 108                    [DL]=1: Giao tiep 4 bit (DB7-DB4), byte lenh/du lieu se duoc gui/nhan 4 bit cao truoc, 4 bit thap sau
+ 109                    [N] =0: Hien thi 1 dong
+ 110                    [N] =1: Hien thi 2 dong
+ 111                    [F] =0: Font 5x8  (hien thi ky tu o dong tren hoac dong duoi)
+ 112                    [F] =1: Font 5x10 (hien thi ky tu ton mat ca 2 dong)
+ 113          ____________________________________________________________________
+ 114          
+ 115          ___VUNG NHO DDRAM LCD___
+ 116          
+C51 COMPILER V9.60.0.0   LCD_16X2                                                          10/09/2022 09:19:45 PAGE 3   
+
+ 117          Vung DDRAM 80 byte luu cac ky tu can hien thi.
+ 118          Danh dau dia chi che do 2 dong:
+ 119           /                                                           \
+ 120          |00 01  02  03  04  05  06  07  08  09  0A  0B  0C  0D  0E  0F| 10 11 ... 27
+ 121          |H  E   L   L   O       W   O   R   L   D                     |
+ 122          |                                                             |
+ 123          |40 41  42  43  44  45  46  47  48  49  4A  4B  4C  4D  4E  4F| 50 51 ... 67
+ 124           \                                                           /
+ 125                                 Vung hien thi
+ 126          Set dia chi DDRAM de di chuyen con tro toi 1 vi tri trong DDRAM, tu do hien thi ky tu/chuoi ky tu tai 1 vi
+             - tri bat ki
+ 127          Ma lenh:  1[7 bit DDRAM address]
+ 128          VD: Xuat ky tu 'W' ra LCD tai dong 1 cot thu 7:
+ 129          Gui lenh 1000 0110 (0x86)
+ 130          Gui char 'W'
+ 131          
+ 132          _____________________________________________________________________
+ 133          
+ 134          ___BANG MA ACSII___
+ 135          
+ 136          20  space
+ 137          21  !
+ 138          22  "
+ 139          23  #
+ 140          24  $
+ 141          25  %
+ 142          26  &
+ 143          27  '
+ 144          28  (
+ 145          29  )
+ 146          2A  *
+ 147          2B  +
+ 148          2C  ,
+ 149          2D  -
+ 150          2E  .
+ 151          2F  /
+ 152          30  0
+ 153          31  1
+ 154          32  2
+ 155          33  3
+ 156          34  4
+ 157          35  5
+ 158          36  6
+ 159          37  7
+ 160          38  8
+ 161          39  9
+ 162          3A  :
+ 163          3B  ;
+ 164          3C  <
+ 165          3D  =
+ 166          3E  >
+ 167          3F  ?
+ 168          40  @
+ 169          41  A
+ 170          42  B
+ 171          43  C
+ 172          44  D
+ 173          45  E
+ 174          46  F
+ 175          47  G
+ 176          48  H
+ 177          49  I
+C51 COMPILER V9.60.0.0   LCD_16X2                                                          10/09/2022 09:19:45 PAGE 4   
+
+ 178          4A  J
+ 179          4B  K
+ 180          4C  L
+ 181          4D  M
+ 182          4E  N
+ 183          4F  O
+ 184          50  P
+ 185          51  Q
+ 186          52  R
+ 187          53  S
+ 188          54  T
+ 189          55  U
+ 190          56  V
+ 191          57  W
+ 192          58  X
+ 193          59  Y
+ 194          5A  Z
+ 195          5B  [
+ 196          5C  \
+ 197          5D  ]
+ 198          5E  ^
+ 199          5F  _
+ 200          60  `
+ 201          61  a
+ 202          62  b
+ 203          63  c
+ 204          64  d
+ 205          65  e
+ 206          66  f
+ 207          67  g
+ 208          68  h
+ 209          69  i
+ 210          6A  j
+ 211          6B  k
+ 212          6C  l
+ 213          6D  m
+ 214          6E  n
+ 215          6F  o
+ 216          70  p
+ 217          71  q
+ 218          72  r
+ 219          73  s
+ 220          74  t
+ 221          75  u
+ 222          76  v
+ 223          77  w
+ 224          78  x
+ 225          79  y
+ 226          7A  z
+ 227          7B  {
+ 228          7C  |
+ 229          7D  }
+ 230          7E  ~
+ 231          ________________________________________________________________________
+ 232                                
+ 233          */
+ 234          
+ 235          void LCD_CMD(unsigned char CMD)
+ 236          {
+ 237   1        LCD_RS = 0;
+ 238   1        LCD_BUS = CMD;
+ 239   1        LCD_EN = 0;
+C51 COMPILER V9.60.0.0   LCD_16X2                                                          10/09/2022 09:19:45 PAGE 5   
+
+ 240   1        LCD_EN = 1;
+ 241   1        if(CMD==0x01||CMD==0x02)
+ 242   1          Delay_ms(2);
+ 243   1        else
+ 244   1          Delay_ms(1);
+ 245   1      }
+ 246          
+ 247          void LCD_SL(unsigned char ROW, unsigned char COL) //Select Location (SL) cua con tro
+ 248          {
+ 249   1        unsigned char CMD;
+ 250   1        if(ROW==0)
+ 251   1          CMD = 0x80 | COL;
+ 252   1        if(ROW==1)
+ 253   1          CMD = 0xC0 | COL;
+ 254   1        LCD_CMD(CMD);
+ 255   1      }
+ 256          
+ 257          void LCD_CHAR_CL(char CHAR)   //Hien thi ky tu char tai vi tri hien tai cua con tro (Current LOCATION (CL))
+ 258          {
+ 259   1        LCD_RS = 1;
+ 260   1        LCD_BUS = CHAR;
+ 261   1        LCD_EN = 0;
+ 262   1        LCD_EN = 1;
+ 263   1        Delay_ms(1);
+ 264   1      }
+ 265          
+ 266          void LCD_CHAR_SL(unsigned char ROW, unsigned char COL, char CHAR)
+ 267          {
+ 268   1        LCD_SL(ROW, COL);
+ 269   1        LCD_CHAR_CL(CHAR);
+ 270   1      }
+ 271          
+ 272          void LCD_OUT_CL(char *p_str)  //Truyen con tro chuoi ky tu
+ 273          {
+ 274   1        unsigned char i = 0;
+ 275   1        while(p_str[i] != 0)      //Check Null trong mang
+ 276   1        {
+ 277   2          LCD_CHAR_CL(p_str[i]);
+ 278   2          i++;
+ 279   2        }
+ 280   1      }
+ 281          
+ 282          void LCD_OUT_SL(unsigned char ROW, unsigned char COL, char *p_str)
+ 283          {
+ 284   1        LCD_SL(ROW, COL);
+ 285   1        LCD_OUT_CL(p_str);
+ 286   1      }
+ 287          
+ 288          void LCD_INIT()
+ 289          {
+ 290   1        
+ 291   1        LCD_CMD(0x38);
+ 292   1        Delay_ms(5);
+ 293   1        LCD_CMD(0x38);
+ 294   1        Delay_ms(1);
+ 295   1        LCD_CMD(0x38);
+ 296   1        
+ 297   1        LCD_CMD(0x38);    // Ma lenh thiet lap che do 8 bit, 2 dong, font 5x8
+ 298   1                          // 001[1] [1][0]xx
+ 299   1        LCD_CMD(0x0C);    // Bat hien thi, bat con tro
+ 300   1        
+ 301   1      }
+C51 COMPILER V9.60.0.0   LCD_16X2                                                          10/09/2022 09:19:45 PAGE 6   
+
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =    180    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =   ----       9
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

@@ -1,0 +1,5 @@
+".\Objects\main.obj",
+".\Objects\Delay.obj",
+".\Objects\UART mode 0 mo rong ngo ra dung IC 74595.obj" 
+TO ".\Objects\UART Mode 0 mo rong ngo ra" 
+PRINT(".\Listings\UART Mode 0 mo rong ngo ra.m51") RAMSIZE(256) 

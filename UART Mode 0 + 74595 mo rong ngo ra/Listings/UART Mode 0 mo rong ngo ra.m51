@@ -1,0 +1,133 @@
+BL51 BANKED LINKER/LOCATER V6.22.2.0                                                    09/09/2022  20:29:12  PAGE 1
+
+
+BL51 BANKED LINKER/LOCATER V6.22.2.0, INVOKED BY:
+C:\KEIL_V5\C51\BIN\BL51.EXE .\Objects\main.obj, .\Objects\Delay.obj, .\Objects\UART mode 0 mo rong ngo ra dung IC 74595.
+>> obj TO .\Objects\UART Mode 0 mo rong ngo ra PRINT (.\Listings\UART Mode 0 mo rong ngo ra.m51) RAMSIZE (256)
+
+
+MEMORY MODEL: SMALL
+
+
+INPUT MODULES INCLUDED:
+  .\Objects\main.obj (MAIN)
+  .\Objects\Delay.obj (DELAY)
+  .\Objects\UART mode 0 mo rong ngo ra dung IC 74595.obj (UART_MODE_0_MO_RONG_NGO_RA_DUNG_IC_74595)
+  C:\KEIL_V5\C51\LIB\C51S.LIB (?C_STARTUP)
+
+
+LINK MAP OF MODULE:  .\Objects\UART Mode 0 mo rong ngo ra (MAIN)
+
+
+            TYPE    BASE      LENGTH    RELOCATION   SEGMENT NAME
+            -----------------------------------------------------
+
+            * * * * * * *   D A T A   M E M O R Y   * * * * * * *
+            REG     0000H     0008H     ABSOLUTE     "REG BANK 0"
+            IDATA   0008H     0001H     UNIT         ?STACK
+
+            * * * * * * *   C O D E   M E M O R Y   * * * * * * *
+            CODE    0000H     0003H     ABSOLUTE     
+            CODE    0003H     0020H     UNIT         ?PR?_DELAY_MS?DELAY
+            CODE    0023H     001DH     UNIT         ?PR?MAIN?MAIN
+            CODE    0040H     000CH     UNIT         ?PR?_UART0_WRITE?UART_MODE_0_MO_RONG_NGO_RA_DUNG_IC_74595
+            CODE    004CH     000CH     UNIT         ?C_C51STARTUP
+            CODE    0058H     0005H     UNIT         ?PR?UART0_INIT?UART_MODE_0_MO_RONG_NGO_RA_DUNG_IC_74595
+
+
+
+OVERLAY MAP OF MODULE:   .\Objects\UART Mode 0 mo rong ngo ra (MAIN)
+
+
+SEGMENT
+  +--> CALLED SEGMENT
+---------------------
+?C_C51STARTUP
+  +--> ?PR?MAIN?MAIN
+
+?PR?MAIN?MAIN
+  +--> ?PR?UART0_INIT?UART_MODE_0_MO_RONG_NG...
+  +--> ?PR?_UART0_WRITE?UART_MODE_0_MO_RONG_...
+  +--> ?PR?_DELAY_MS?DELAY
+
+
+
+SYMBOL TABLE OF MODULE:  .\Objects\UART Mode 0 mo rong ngo ra (MAIN)
+
+  VALUE           TYPE          NAME
+  ----------------------------------
+
+  -------         MODULE        MAIN
+  C:0000H         SYMBOL        _ICE_DUMMY_
+BL51 BANKED LINKER/LOCATER V6.22.2.0                                                  09/09/2022  20:29:12  PAGE 2
+
+
+  D:00B0H         PUBLIC        P3
+  C:0023H         PUBLIC        main
+  -------         PROC          MAIN
+  C:0023H         LINE#         6
+  C:0023H         LINE#         7
+  C:0023H         LINE#         8
+  C:0026H         LINE#         9
+  C:0026H         LINE#         10
+  C:0026H         LINE#         11
+  C:002BH         LINE#         12
+  C:0032H         LINE#         13
+  C:0037H         LINE#         14
+  C:003EH         LINE#         15
+  -------         ENDPROC       MAIN
+  -------         ENDMOD        MAIN
+
+  -------         MODULE        DELAY
+  C:0000H         SYMBOL        _ICE_DUMMY_
+  C:0003H         PUBLIC        _Delay_ms
+  -------         PROC          _DELAY_MS
+  D:0006H         SYMBOL        t
+  -------         DO            
+  D:0004H         SYMBOL        x
+  D:0002H         SYMBOL        y
+  -------         ENDDO         
+  C:0003H         LINE#         5
+  C:0003H         LINE#         6
+  C:0003H         LINE#         8
+  C:000DH         LINE#         9
+  C:000DH         LINE#         10
+  C:001BH         LINE#         11
+  C:0022H         LINE#         12
+  -------         ENDPROC       _DELAY_MS
+  -------         ENDMOD        DELAY
+
+  -------         MODULE        UART_MODE_0_MO_RONG_NGO_RA_DUNG_IC_74595
+  C:0000H         SYMBOL        _ICE_DUMMY_
+  D:00B0H         PUBLIC        P3
+  C:0058H         PUBLIC        UART0_INIT
+  B:0098H.1       PUBLIC        TI
+  D:0099H         PUBLIC        SBUF
+  B:00B0H.2       PUBLIC        UART_ST_CP
+  B:0098H.7       PUBLIC        SM0
+  B:0098H.6       PUBLIC        SM1
+  C:0040H         PUBLIC        _UART0_Write
+  -------         PROC          UART0_INIT
+  C:0058H         LINE#         57
+  C:0058H         LINE#         58
+  C:0058H         LINE#         59
+  C:005CH         LINE#         60
+  -------         ENDPROC       UART0_INIT
+  -------         PROC          _UART0_WRITE
+  D:0007H         SYMBOL        UART_Byte
+  C:0040H         LINE#         61
+  C:0040H         LINE#         62
+  C:0040H         LINE#         63
+  C:0042H         LINE#         64
+BL51 BANKED LINKER/LOCATER V6.22.2.0                                                  09/09/2022  20:29:12  PAGE 3
+
+
+  C:0045H         LINE#         65
+  C:0047H         LINE#         67
+  C:0049H         LINE#         68
+  C:004BH         LINE#         69
+  -------         ENDPROC       _UART0_WRITE
+  -------         ENDMOD        UART_MODE_0_MO_RONG_NGO_RA_DUNG_IC_74595
+
+Program Size: data=9.0 xdata=0 code=93
+LINK/LOCATE RUN COMPLETE.  0 WARNING(S),  0 ERROR(S)

@@ -1,0 +1,113 @@
+C51 COMPILER V9.60.0.0   UART_MODE_0_MO_RONG_NGO_VAO_DUNG_IC_74165                         09/09/2022 20:56:56 PAGE 1   
+
+
+C51 COMPILER V9.60.0.0, COMPILATION OF MODULE UART_MODE_0_MO_RONG_NGO_VAO_DUNG_IC_74165
+OBJECT MODULE PLACED IN .\Objects\UART mode 0 mo rong ngo vao dung IC 74165.obj
+COMPILER INVOKED BY: C:\Keil_v5\C51\BIN\C51.EXE ..\Library\UART mode 0 mo rong ngo vao dung IC 74165.c OPTIMIZE(8,SPEED)
+                    - BROWSE DEBUG OBJECTEXTEND PRINT(.\Listings\UART mode 0 mo rong ngo vao dung IC 74165.lst) TABS(2) OBJECT(.\Objects\UART
+                    - mode 0 mo rong ngo vao dung IC 74165.obj)
+
+line level    source
+
+   1          /*
+   2          UART la chuan truyen noi tiep khong dong bo, co kha nang truyen song cong
+   3          UART trong 8051:
+   4          TxD: Chan truyen      RxD: Chan nhan
+   5          SBUF: Thanh ghi dem (address 0x99)
+   6          SCON: Thanh ghi trang thai, dieu khien hoat dong truyen (address 0x98)
+   7                              [SM0][SM1][SM2][REN] [TB8][RB8][TI][RI]
+   8                
+   9                 bit                                Mo ta                                             Dia chi
+  10                [SM0]  bit 0 chon kieu truyen noi tiep                                                  0x9F
+  11                [SM1]  bit 1 chon kieu truyen noi tiep                                                  0x9E
+  12                [SM2]  bit cho phep truyen ket noi nhieu VXL o mode 2 va mode 3,                        0x9D
+  13                       RI se khong tich cuc neu bit thu 9 nhan duoc la 0.
+  14                [REN]  bit cho phep nhan ky tu. REN = 0 khong cho phep, REN = 1 cho phep nhan ky tu     0x9C
+  15                [TB8]  Luu bit 9 de truyen di khi hoat dong o mode 2 va 3.                              0x9B
+  16                       TB8 = 0 hay 1 la do nguoi lap trinh thiet lap
+  17                [RB8]  Nhan bit 9 khi hoat dong o mode 2 va 3                                           0x9A
+  18                [TI]   TI = 1 bao hieu truyen xong 1 ky tu. TI khong tu dong xoa,                       0x99
+  19                       nguoi lap trinh tu xoa khi san sang truyen ky tu tiep theo
+  20                [RI]   RI = 1 bao hieu nhan xong 1 ky tu. RI khong tu dong xoa,                         0x98
+  21                       nguoi lap trinh tu xoa khi san sang nhan ky tu tiep theo
+  22          
+  23          Kieu truyen:
+  24              [SM0] [SM1] Mode        Mo ta                   Baud                                                    Chuc nang
+  25                0     0     0     Thanh ghi dich    Co dinh  (f_crystal/12)                   Mo rong ngo vao, ngo ra cho vxl                 (D
+             -ong bo)
+  26                0     1     1       UART 8 bit      Thay doi (duoc dat boi Timer)             Truyen nhan du lieu vxl <-> ngoai vi, vxl
+             -,...  (Bat dong bo)
+  27                1     0     2       UART 9 bit      Co dinh  (f_crystal/12 hoac f_crystal/64) Truyen nhan du lieu vxl <-> ngoai v
+             -i, vxl,...  (Bat dong bo)
+  28                1     1     3       UART 9 bit      Thay doi (duoc dat boi Timer)             Truyen nhan du lieu vxl <-> ngoai vi, vxl
+             -,...  (Bat dong bo)
+  29          
+  30          Luu y: gui va nhan UART bit LSB truoc, lan luot toi bit MSB
+  31                
+  32                
+  33          Mode 0 ung dung mo rong ngo vao:
+  34                8051          Shift Register (VD: 74165)
+  35                           - - - - - - - - - - -
+  36                TXD <-----| Clock (CLK)         |<-----   8
+  37                RXD <-----| Data  (S0)          |<----- Extra
+  38          UART_SH_LD<-----| Xuat du lieu (SH_LD)|. . .  INput
+  39                GND <-----| INH                 |<-----
+  40                           - - - - - - - - - - - 
+  41                           
+  42          */
+  43          #include "main.h"
+  44          #include "port.h"
+  45          
+  46          /*
+  47          Can tao port.h nhu vi du sau:
+  48          
+  49          #ifndef _PORT_H_
+C51 COMPILER V9.60.0.0   UART_MODE_0_MO_RONG_NGO_VAO_DUNG_IC_74165                         09/09/2022 20:56:56 PAGE 2   
+
+  50          #define _PORT_H_
+  51          
+  52          sbit UART_SH_LD = P3^2;
+  53          
+  54          #endif
+  55          */
+  56          
+  57          void UART0_INIT()
+  58          {
+  59   1        SM0 = SM1 = 0;
+  60   1        REN = 1;  //Cho phep nhan du lieu
+  61   1      }
+  62          unsigned char UART0_Read()
+  63          {
+  64   1        UART_SH_LD = 0;
+  65   1        UART_SH_LD = 1;
+  66   1        
+  67   1        RI = 0;
+  68   1        while(RI == 0);
+  69   1        return SBUF;
+  70   1      }
+  71          
+  72          
+  73          
+  74          
+  75          
+  76          
+  77          
+  78          
+  79          
+  80          
+  81          
+  82          
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =     19    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =   ----    ----
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)
