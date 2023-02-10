@@ -1,0 +1,4 @@
+".\Objects\main.obj",
+".\Objects\Delay using TIMER.obj" 
+TO ".\Objects\1Button control Led" 
+PRINT(".\Listings\1Button control Led.m51") RAMSIZE(256) 

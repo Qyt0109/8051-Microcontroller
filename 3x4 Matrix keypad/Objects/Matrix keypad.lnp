@@ -1,0 +1,4 @@
+".\Objects\main.obj",
+".\Objects\3x4 keypad.obj" 
+TO ".\Objects\Matrix keypad" 
+PRINT(".\Listings\Matrix keypad.m51") RAMSIZE(256) 

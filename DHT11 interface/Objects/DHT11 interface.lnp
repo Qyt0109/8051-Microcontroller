@@ -1,0 +1,6 @@
+".\Objects\main.obj",
+".\Objects\LCD4.obj",
+".\Objects\Delay.obj",
+".\Objects\DHT11.obj" 
+TO ".\Objects\DHT11 interface" 
+PRINT(".\Listings\DHT11 interface.m51") RAMSIZE(256) 
