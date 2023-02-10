@@ -1,0 +1,140 @@
+BL51 BANKED LINKER/LOCATER V6.22.2.0                                                    09/10/2022  06:04:23  PAGE 1
+
+
+BL51 BANKED LINKER/LOCATER V6.22.2.0, INVOKED BY:
+C:\KEIL_V5\C51\BIN\BL51.EXE .\Objects\main.obj, .\Objects\Delay.obj TO .\Objects\Nhieu IC74595 mo rong ngo ra PRINT (.\L
+>> istings\Nhieu IC74595 mo rong ngo ra.m51) RAMSIZE (256)
+
+
+MEMORY MODEL: SMALL
+
+
+INPUT MODULES INCLUDED:
+  .\Objects\main.obj (MAIN)
+  .\Objects\Delay.obj (DELAY)
+  C:\KEIL_V5\C51\LIB\C51S.LIB (?C_STARTUP)
+  C:\KEIL_V5\C51\LIB\C51S.LIB (?C?CLDOPTR)
+
+
+LINK MAP OF MODULE:  .\Objects\Nhieu IC74595 mo rong ngo ra (MAIN)
+
+
+            TYPE    BASE      LENGTH    RELOCATION   SEGMENT NAME
+            -----------------------------------------------------
+
+            * * * * * * *   D A T A   M E M O R Y   * * * * * * *
+            REG     0000H     0008H     ABSOLUTE     "REG BANK 0"
+            DATA    0008H     0006H     UNIT         _DATA_GROUP_
+            DATA    000EH     0003H     UNIT         ?DT?MAIN
+            IDATA   0011H     0001H     UNIT         ?STACK
+
+            * * * * * * *   C O D E   M E M O R Y   * * * * * * *
+            CODE    0000H     0003H     ABSOLUTE     
+            CODE    0003H     0068H     UNIT         ?PR?_XUAT_BYTE?MAIN
+            CODE    006BH     002DH     UNIT         ?C?LIB_CODE
+            CODE    0098H     0020H     UNIT         ?PR?_DELAY_MS?DELAY
+            CODE    00B8H     0013H     UNIT         ?PR?MAIN?MAIN
+            CODE    00CBH     000CH     UNIT         ?C_C51STARTUP
+
+
+
+OVERLAY MAP OF MODULE:   .\Objects\Nhieu IC74595 mo rong ngo ra (MAIN)
+
+
+SEGMENT                          DATA_GROUP 
+  +--> CALLED SEGMENT          START    LENGTH
+----------------------------------------------
+?C_C51STARTUP                  -----    -----
+  +--> ?PR?MAIN?MAIN
+
+?PR?MAIN?MAIN                  0008H    0002H
+  +--> ?PR?_XUAT_BYTE?MAIN
+
+?PR?_XUAT_BYTE?MAIN            000AH    0004H
+
+
+
+SYMBOL TABLE OF MODULE:  .\Objects\Nhieu IC74595 mo rong ngo ra (MAIN)
+
+  VALUE           TYPE          NAME
+  ----------------------------------
+
+BL51 BANKED LINKER/LOCATER V6.22.2.0                                                  09/10/2022  06:04:23  PAGE 2
+
+
+  -------         MODULE        MAIN
+  C:0000H         SYMBOL        _ICE_DUMMY_
+  D:00A0H         PUBLIC        P2
+  B:00A0H.0       PUBLIC        IC74HC595_SH_CP
+  C:0003H         PUBLIC        _Xuat_Byte
+  B:00A0H.1       PUBLIC        IC74HC595_DS
+  B:00A0H.2       PUBLIC        IC74HC595_ST_CP
+  C:00B8H         PUBLIC        main
+  D:000EH         PUBLIC        i
+  D:000FH         PUBLIC        j
+  D:0010H         PUBLIC        Data_Byte
+  -------         PROC          _XUAT_BYTE
+  D:000AH         SYMBOL        p
+  D:000DH         SYMBOL        So_Byte
+  C:0003H         LINE#         10
+  C:000BH         LINE#         12
+  C:000BH         LINE#         13
+  C:0015H         LINE#         14
+  C:0015H         LINE#         15
+  C:0033H         LINE#         16
+  C:0041H         LINE#         17
+  C:0041H         LINE#         18
+  C:005AH         LINE#         19
+  C:005CH         LINE#         20
+  C:005EH         LINE#         21
+  C:0062H         LINE#         22
+  C:0066H         LINE#         23
+  C:0068H         LINE#         24
+  C:006AH         LINE#         25
+  -------         ENDPROC       _XUAT_BYTE
+  -------         PROC          MAIN
+  -------         DO            
+  D:0008H         SYMBOL        buffer
+  -------         ENDDO         
+  C:00B8H         LINE#         27
+  C:00B8H         LINE#         28
+  C:00B8H         LINE#         30
+  C:00BBH         LINE#         31
+  C:00BEH         LINE#         32
+  C:00C9H         LINE#         33
+  C:00C9H         LINE#         34
+  C:00C9H         LINE#         35
+  -------         ENDPROC       MAIN
+  -------         ENDMOD        MAIN
+
+  -------         MODULE        DELAY
+  C:0000H         SYMBOL        _ICE_DUMMY_
+  C:0098H         PUBLIC        _Delay_ms
+  -------         PROC          _DELAY_MS
+  D:0006H         SYMBOL        t
+  -------         DO            
+  D:0004H         SYMBOL        x
+  D:0002H         SYMBOL        y
+  -------         ENDDO         
+  C:0098H         LINE#         5
+  C:0098H         LINE#         6
+  C:0098H         LINE#         8
+BL51 BANKED LINKER/LOCATER V6.22.2.0                                                  09/10/2022  06:04:23  PAGE 3
+
+
+  C:00A2H         LINE#         9
+  C:00A2H         LINE#         10
+  C:00B0H         LINE#         11
+  C:00B7H         LINE#         12
+  -------         ENDPROC       _DELAY_MS
+  -------         ENDMOD        DELAY
+
+  -------         MODULE        ?C?CLDOPTR
+  C:006BH         PUBLIC        ?C?CLDOPTR
+  -------         ENDMOD        ?C?CLDOPTR
+
+*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
+    SEGMENT: ?PR?_DELAY_MS?DELAY
+
+Program Size: data=18.0 xdata=0 code=215
+LINK/LOCATE RUN COMPLETE.  1 WARNING(S),  0 ERROR(S)
