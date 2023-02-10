@@ -1,0 +1,5 @@
+".\Objects\main.obj",
+".\Objects\UART mode 1.obj",
+".\Objects\Delay.obj" 
+TO ".\Objects\UART mode 1 truyen nhan 2 vxl" 
+PRINT(".\Listings\UART mode 1 truyen nhan 2 vxl.m51") RAMSIZE(256) 
