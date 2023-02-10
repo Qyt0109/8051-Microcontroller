@@ -1,0 +1,106 @@
+C51 COMPILER V9.60.0.0   MAIN                                                              09/10/2022 06:22:37 PAGE 1   
+
+
+C51 COMPILER V9.60.0.0, COMPILATION OF MODULE MAIN
+OBJECT MODULE PLACED IN main.OBJ
+COMPILER INVOKED BY: C:\Keil_v5\C51\BIN\C51.EXE main.c OMF2 OPTIMIZE(8,SPEED) BROWSE DEBUG TABS(2)
+
+line level    source
+
+   1          #include "main.h"
+   2          #include "..\Library\Soft_I2c.h"
+   3          #include "..\Library\Lcd4.h"
+   4          #include "..\Library\Rtc_Ds1307.h"
+   5          #include "..\Library\LunarCalendar.h"
+   6          #include "port.h"
+   7          
+   8          unsigned char * code Days[] = {"SUN","MON","TUE","WED","THU","FRI","SAT"};
+   9          unsigned char Hour, Minute, Second, Mode, Day, Date, Month, Year, old_second;
+  10          unsigned char SolarDate, SolarMonth;
+  11          char SolarYear;
+  12          
+  13          void main()
+  14          {
+  15   1        Soft_I2c_Init();
+  16   1        Ds1307_Init();
+  17   1        Lcd_Init();
+  18   1        
+  19   1        Ds1307_Write(0x07, 0x10); //Tao SOUT tan so 1 Hz
+  20   1        
+  21   1        //Cho phep ngat canh xuong INTR1 (bit IT1 trong thanh ghi TCON = 1)
+  22   1        IT1 = 1;
+  23   1        //Cho phep ngat Timer 1 (bit EX1 = 1)
+  24   1        EX1 = 1;
+  25   1        //Cho phep ngat toan cuc (bit EA = 1)
+  26   1        EA = 1;
+  27   1      
+  28   1        while(1)
+  29   1        {
+  30   2          Ds1307_Read_Time(&Hour, &Minute, &Second, &Mode);
+  31   2          Lcd_Chr(1,5,Hour/10+0x30);
+  32   2          Lcd_Chr_Cp(Hour%10+0x30);
+  33   2          Lcd_Chr_Cp(':');
+  34   2          Lcd_Chr_Cp(Minute/10+0x30);
+  35   2          Lcd_Chr_Cp(Minute%10+0x30);
+  36   2          Lcd_Chr_Cp(':');
+  37   2          Lcd_Chr_Cp(Second/10+0x30);
+  38   2          Lcd_Chr_Cp(Second%10+0x30);
+  39   2      
+  40   2          Ds1307_Read_Date(&Day, &Date, &Month, &Year);
+  41   2          if(BTN == 1)
+  42   2          {
+  43   3            Lcd_Out(2,1,"                ");
+  44   3            Lcd_Out(2,2,Days[Day-1]);
+  45   3            Lcd_Chr_Cp(' ');
+  46   3            Lcd_Chr_Cp(Date/10+0x30);
+  47   3            Lcd_Chr_Cp(Date%10+0x30);
+  48   3            Lcd_Chr_Cp('/');
+  49   3            Lcd_Chr_Cp(Month/10+0x30);
+  50   3            Lcd_Chr_Cp(Month%10+0x30);
+  51   3            Lcd_Out_Cp("/20");
+  52   3            Lcd_Chr_Cp(Year/10+0x30);
+  53   3            Lcd_Chr_Cp(Year%10+0x30);
+  54   3          }
+  55   2          else
+C51 COMPILER V9.60.0.0   MAIN                                                              09/10/2022 06:22:37 PAGE 2   
+
+  56   2          {
+  57   3            Solar2Lunar(Date, Month, Year, &SolarDate, &SolarMonth, & SolarYear);
+  58   3            Lcd_Out(2,1,"LUNAR:");
+  59   3            Lcd_Chr_Cp(SolarDate/10+0x30);
+  60   3            Lcd_Chr_Cp(SolarDate%10+0x30);
+  61   3            Lcd_Chr_Cp('/');
+  62   3            Lcd_Chr_Cp(SolarMonth/10+0x30);
+  63   3            Lcd_Chr_Cp(SolarMonth%10+0x30);
+  64   3            Lcd_Chr_Cp('/');
+  65   3            Lcd_Chr_Cp((Year+2000)/1000+0x30);
+  66   3            Lcd_Chr_Cp((Year+2000)/100%10+0x30);
+  67   3            Lcd_Chr_Cp((Year+2000)/10%10+0x30);
+  68   3            Lcd_Chr_Cp((Year+2000)%10+0x30);
+  69   3          }
+  70   2          PCON = PCON | 0x01;
+  71   2        }
+  72   1      }
+  73          
+  74          void EX1_ISR(void) interrupt 2
+  75          {
+  76   1        
+  77   1      }
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =    559    ----
+   CONSTANT SIZE    =     77    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =     12    ----
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+   EDATA SIZE       =   ----    ----
+   HDATA SIZE       =   ----    ----
+   XDATA CONST SIZE =   ----    ----
+   FAR CONST SIZE   =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)
