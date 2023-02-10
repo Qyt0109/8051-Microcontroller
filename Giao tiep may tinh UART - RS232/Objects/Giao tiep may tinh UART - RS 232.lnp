@@ -1,0 +1,6 @@
+".\Objects\main.obj",
+".\Objects\UART mode 1.obj",
+".\Objects\Delay.obj" 
+TO ".\Objects\Giao tiep may tinh UART - RS 232" 
+
+PRINT(".\Listings\Giao tiep may tinh UART - RS 232.map") ru 
